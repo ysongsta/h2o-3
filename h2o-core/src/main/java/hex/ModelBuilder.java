@@ -1033,13 +1033,13 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
   }
 
   protected boolean ignoreStringColumns() {
-    return true;
+    return _parms.ignoreStringColumns();
   }
   protected boolean ignoreConstColumns() {
-    return _parms._ignore_const_cols;
+    return _parms.ignoreConstColumns();
   }
   protected boolean ignoreUuidColumns() {
-    return true;
+    return _parms.ignoreUuidColumns();
   }
 
   /**
@@ -1068,7 +1068,7 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
    * @return whether model builder natively supports NAs
    */
   protected boolean canLearnFromNAs() {
-    return false;
+    return _parms.canLearnFromNAs();
   }
   
   /**
