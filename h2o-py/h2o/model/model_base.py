@@ -1775,11 +1775,25 @@ class ModelBase(h2o_meta(Keyed)):
 
     def get_domain_mapping(self):
         """
+        Get a mapping between columns and their domains.
 
-        :return: Mapping column -> factors
+        :return: Dictionary containing a mapping column -> factors
         """
-        res = h2o.api("GET /3/Models/{}/domains".format(self.model_id))
-        return dict(zip(res["names"], res["domains"]))
+        output = self._model_json["output"]
+        return dict(zip(output["names"], output["domains"]))
+
+
+def _get_matplotlib_pyplot(server):
+    try:
+        # noinspection PyUnresolvedReferences
+        import matplotlib
+        if server: matplotlib.use("Agg")
+        # noinspection PyUnresolvedReferences
+        import matplotlib.pyplot as plt
+        return plt
+    except ImportError:
+        print("`matplotlib` library is required for this function!")
+        return None
 
 def _get_mplot3d_pyplot(functionName):
     try:
