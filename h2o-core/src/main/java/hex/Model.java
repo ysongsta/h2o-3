@@ -461,13 +461,7 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
       long xs = 0x600DL;
       int count = 0;
       Field[] fields = Weaver.getWovenFields(this.getClass());
-      Arrays.sort(fields,
-              new Comparator<Field>() {
-                public int compare(Field field1, Field field2) {
-                  return field1.getName().compareTo(field2.getName());
-                }
-              });
-
+      Arrays.sort(fields, Comparator.comparing(Field::getName));
       for (Field f : fields) {
         if (ignoredFields != null && ignoredFields.contains(f.getName())) {
           // Do not include ignored fields in the final hash
@@ -507,7 +501,10 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
           try {
             f.setAccessible(true);
             Object value = f.get(this);
-            if (value != null) {
+            if (value instanceof Enum) {
+              // use string hashcode for enums, otherwise the checksum would be different each run
+              xs = xs * P + (long)(value.toString().hashCode());
+            } else if (value != null) {
               xs = xs * P + (long)(value.hashCode());
             } else {
               xs = xs * P + P;
@@ -2454,7 +2451,7 @@ public abstract class Model<M extends Model<M,P,O>, P extends Model.Parameters, 
             FileOutputStream os = new FileOutputStream(ss.getFilename());
             ss.getStreamWriter().writeTo(os);
             os.close();
-            genmodel = MojoModel.load(filename);
+            genmodel = MojoModel.load(filename, true);
             features = MemoryManager.malloc8d(genmodel._names.length);
           } catch (IOException e1) {
             e1.printStackTrace();

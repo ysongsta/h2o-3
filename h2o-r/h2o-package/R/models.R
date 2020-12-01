@@ -373,7 +373,9 @@ NULL
                             else if (all(is.na(x))) NA
                             else paste0('"',h2o.getId(x),'"')
                           })
-      if (type == "character")
+      if (paramDef$type == "string[][]"){
+        paramValue <- .collapse.list.of.list.string(paramValue)
+      } else if (type == "character")
         paramValue <- .collapse.char(paramValue)
       else if (paramDef$type == "StringPair[]")
         paramValue <- .collapse(sapply(paramValue, .collapse.tuple.string))
@@ -393,6 +395,14 @@ NULL
 
 .collapse.tuple.string <- function(x) {
   .collapse.tuple(x, .escape.string)
+}
+
+.collapse.list.of.list.string <- function(x){
+  parts <- c()
+  for (i in x) {
+    parts <- c(parts, paste0("[", paste0(i, collapse = ","), "]"))
+  }
+  paste0("[", paste0(parts, collapse = ","), "]")
 }
 
 .collapse.tuple.key_value <- function(x) {
@@ -1972,18 +1982,6 @@ h2o.varimp <- function(object) {
   o <- object
   if( is(o, "H2OModel") ) {
     vi <- o@model$variable_importances
-    if( is.null(vi) && !is.null(object@model$standardized_coefficient_magnitudes)) { # may be glm
-      tvi <- object@model$standardized_coefficient_magnitudes
-      maxCoeff <- max(tvi$coefficients)
-      sumCoeff <- sum(tvi$coefficients)
-      scaledCoeff <- tvi$coefficients/maxCoeff
-      percentageC <- tvi$coefficients/sumCoeff
-      variable <- tvi$names
-      relative_importance <- tvi$coefficients
-      scaled_importance <- scaledCoeff
-      percentage <- percentageC
-      vi <- data.frame(variable, relative_importance, scaled_importance, percentage)
-      }  # no true variable importances, maybe glm coeffs? (return standardized table...)
     if( is.null(vi) ) {
       warning("This model doesn't have variable importances", call. = FALSE)
       return(invisible(NULL))
@@ -2086,6 +2084,63 @@ h2o.get_ntrees_actual <- function(object) {
         return(NULL)
     }
 }
+
+#' Feature interactions and importance, leaf statistics and split value histograms in a tabular form.
+#' Available for XGBoost and GBM.
+#'
+#' Metrics:
+#' Gain - Total gain of each feature or feature interaction.
+#' FScore - Amount of possible splits taken on a feature or feature interaction.
+#' wFScore - Amount of possible splits taken on a feature or feature interaction weighed by 
+#' the probability of the splits to take place.
+#' Average wFScore - wFScore divided by FScore.
+#' Average Gain - Gain divided by FScore.
+#' Expected Gain - Total gain of each feature or feature interaction weighed by the probability to gather the gain.
+#' Average Tree Index
+#' Average Tree Depth
+#'
+#' @param model A trained xgboost model.
+#' @param max_interaction_depth Upper bound for extracted feature interactions depth. Defaults to 100.
+#' @param max_tree_depth Upper bound for tree depth. Defaults to 100.
+#' @param max_deepening Upper bound for interaction start deepening (zero deepening => interactions 
+#' starting at root only). Defaults to -1.
+#'
+#' @examples
+#' \dontrun{
+#' library(h2o)
+#' h2o.init()
+#' boston <- h2o.importFile(
+#'        "https://s3.amazonaws.com/h2o-public-test-data/smalldata/gbm_test/BostonHousing.csv",
+#'         destination_frame="boston"
+#'         )
+#' boston_xgb <- h2o.xgboost(training_frame = boston, y = "medv", seed = 1234)
+#' feature_interactions <- h2o.feature_interaction(boston_xgb)
+#' }
+#' @export
+h2o.feature_interaction <- function(model, max_interaction_depth = 100, max_tree_depth = 100, max_deepening = -1) {
+    o <- model
+    if (is(o, "H2OModel")) {
+        if (o@algorithm == "gbm" | o@algorithm == "xgboost"){
+            parms <- list()
+            parms$model_id <- model@model_id
+            parms$max_interaction_depth <- max_interaction_depth
+            parms$max_tree_depth <- max_tree_depth
+            parms$max_deepening <- max_deepening
+            
+            json <- .h2o.doSafePOST(urlSuffix = "FeatureInteraction", parms=parms)
+            source <- .h2o.fromJSON(jsonlite::fromJSON(json,simplifyDataFrame=FALSE))
+            
+            return(source$feature_interaction)
+        } else {
+            warning(paste0("No calculation available for this model"))
+            return(NULL)
+        }
+    } else {
+        warning(paste0("No calculation available for ", class(o)))
+        return(NULL)
+    }
+}
+
 
 #'
 #' Retrieve the respective weight matrix
@@ -4248,21 +4303,77 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
         upper = y + stddev
         lower = y - stddev
         plot(pp[,1:2], type = line_type, pch=pch, medpch=pch, medcol="red", medlty=0, staplelty=0, boxlty=0, col="red", main = attr(pp,"description"), ylim  = c(min(lower), max(upper)))
-        polygon(c(x, rev(x)), c(lower, rev(upper)), col = adjustcolor("red", alpha.f = 0.1), border = F)
+        pp.plot.1d.plotNA(pp, type, "red")
+        polygon(pp.plot.1d.proccessDataForPolygon(c(pp[,1], rev(pp[,1])), c(lower, rev(upper))) , col = adjustcolor("red", alpha.f = 0.1), border = F)
         if(type == "enum"){
           x <- c(1:length(x))
           arrows(x, lower, x, upper, code=3, angle=90, length=0.1, col="red")
         }
       } else {
         plot(pp[,1:2], type = line_type, pch=pch, medpch=pch, medcol="red", medlty=0, staplelty=0, boxlty=0, col="red", main = attr(pp,"description"))
+        pp.plot.1d.plotNA(pp, type, "red")
       }
     } else {
       print("Partial Dependence not calculated--make sure nbins is as high as the level count")
     }
   }
+        
+  pp.plot.1d.plotNA <- function(pp, type, color) {
+    ## Plot NA value if numerical
+    NAsIds = which(is.na(pp[,1:1]))
+    if (type != "enum" && include_na && length(NAsIds) != 0) {
+        points(pp[,1:1],array(pp[NAsIds, 2:2], dim = c(length(pp[,1:1]), 1)), col=color, type="l", lty=5)
+        if (is.null(targets)) {
+          legend("topright", legend="NAN", col=color, lty=5, bty="n", ncol=length(pps))
+        }
+        return(TRUE)
+    } else {
+        return(FALSE)
+    }
+  }     
+         
+  pp.plot.1d.plotLegend.multinomial <- function(pp, targets, colors, lty, pch, has_NA) {
+    if (include_na && length(which(is.na(pp[,1:1]))) != 0) {
+      legendTargets <- c()
+      legendColors <- c()
+      legendLtys <- c()
+      legendPchs <- c()
+      legendBtys <- c()
+      for ( i in 1: length(targets)) {
+        # target label
+        legendTargets <- append(legendTargets, targets[i])
+        legendColors <- append(legendColors, colors[i])
+        legendLtys <- append(legendLtys, lty)
+        legendPchs <- append(legendPchs, pch)
+        legendBtys <- append(legendBtys, "n")
+        # target NAN line label
+        if (has_NA[i]) {
+          legendTargets <- append(legendTargets, paste(targets[i], " NAN"))
+          legendColors <- append(legendColors, colors[i])
+          legendLtys <- append(legendLtys, 5)
+        } 
+        legendPchs <- append(legendPchs, NULL)
+        legendBtys <- append(legendBtys, NULL)
+      }
+      legend("topright", legend=legendTargets, col=legendColors, lty=legendLtys, pch=legendPchs, bty=legendBtys, ncol=length(pps))
+    }  else {
+      legend("topright",legend=targets, col=colors, lty=lty, pch=pch, bty="n", ncol=length(pps))
+    }
+  }
+    
+  pp.plot.1d.proccessDataForPolygon <- function(X, Y) {
+    ## polygon can't handle NAs
+    NAsIds = which(is.na(X))
+    if (length(NAsIds) != 0) {
+      X = X[-NAsIds]
+      Y = Y[-NAsIds]
+    }
+    return(cbind(X, Y))
+  }        
 
   pp.plot.1d.multinomial <- function(pps) {
     colors <- rainbow(length(pps))
+    has_NA <- c()
     for(i in 1:length(pps)) {
       pp <- pps[[i]]
       if(!all(is.na(pp))) {
@@ -4290,7 +4401,8 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
           } else {
             points(pp[,1:2], type = line_type, pch=pch, medpch=pch, medcol=color, medlty=0, staplelty=0, boxlty=0, col = color)
           }
-          polygon(c(x, rev(x)), c(lower, rev(upper)), col = adjustcolor(color, alpha.f = 0.1), border = F)   
+          has_NA <- append(has_NA, pp.plot.1d.plotNA(pp, type, color))
+          polygon(pp.plot.1d.proccessDataForPolygon(c(x, rev(x)), c(lower, rev(upper))), col = adjustcolor(color, alpha.f = 0.1), border = F)   
           if(type == "enum"){
             x <- c(1:length(x))
             arrows(x, lower, x, upper, code=3, angle=90, length=0.1, col=color)
@@ -4301,12 +4413,13 @@ h2o.partialPlot <- function(object, data, cols, destination_key, nbins=20, plot 
           } else {
             points(pp[,1:2], type = line_type, pch=pch, medpch=pch, medcol=color, medlty=0, staplelty=0, boxlty=0, col = color) 
           }
+          has_NA <- append(has_NA, pp.plot.1d.plotNA(pp, type, color))
         }
-        legend("topright",legend=targets, col=colors, lty=lty, pch=pch, bty="n", ncol=length(pps))      
       } else {
         print("Partial Dependence not calculated--make sure nbins is as high as the level count")
       }
     }
+    pp.plot.1d.plotLegend.multinomial(pp, targets, colors, lty, pch, has_NA)
   }      
         
   pp.plot.2d <- function(pp, nBins=nbins, user_cols=NULL, user_num_splits=NULL) {

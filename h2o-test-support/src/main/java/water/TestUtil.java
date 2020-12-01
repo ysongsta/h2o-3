@@ -1,7 +1,9 @@
 package water;
 
 import hex.CreateFrame;
+import hex.Model;
 import hex.SplitFrame;
+import hex.genmodel.*;
 import hex.genmodel.easy.RowData;
 import org.junit.AfterClass;
 import org.junit.Ignore;
@@ -9,6 +11,7 @@ import org.junit.Rule;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
+import water.api.StreamingSchema;
 import water.fvec.*;
 import water.parser.BufferedString;
 import water.parser.DefaultParserProviders;
@@ -404,7 +407,7 @@ public class TestUtil extends Iced {
     return Boolean.valueOf(System.getenv("H2O_JUNIT_ALLOW_NO_SMALLDATA"));
   }
   
-  private static void downloadTestFileFromS3(String fname) throws IOException {
+  protected static void downloadTestFileFromS3(String fname) throws IOException {
     if (fname.startsWith("./"))
       fname = fname.substring(2);
     File f = new File(fname);
@@ -1367,6 +1370,26 @@ public class TestUtil extends Iced {
     }
 
     return weightsVec;
+  }
+
+  @SuppressWarnings("rawtypes")
+  public static GenModel toMojo(Model model, String testName, boolean readModelMetaData) {
+    final String filename = testName + ".zip";
+    StreamingSchema ss = new StreamingSchema(model.getMojo(), filename);
+    try (FileOutputStream os = new FileOutputStream(ss.getFilename())) {
+      ss.getStreamWriter().writeTo(os);
+    } catch (IOException e) {
+      throw new IllegalStateException("MOJO writing failed", e);
+    }
+    try {
+      MojoReaderBackend cr = MojoReaderBackendFactory.createReaderBackend(filename);
+      return ModelMojoReader.readFrom(cr, readModelMetaData);
+    } catch (IOException e) {
+      throw new IllegalStateException("MOJO loading failed", e);
+    } finally {
+      boolean deleted = new File(filename).delete();
+      if (!deleted) Log.warn("Failed to delete the file");
+    }
   }
 
 }

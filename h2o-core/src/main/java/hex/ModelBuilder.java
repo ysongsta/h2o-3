@@ -272,8 +272,10 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
     public final void computeParameters() {
       M model = _result.get();
       if (model != null) {
-        //set input parameters
+        model.write_lock(_job);
         model.setInputParms(_input_parms);
+        model.update(_job);
+        model.unlock(_job);
       }
     }
   }
@@ -367,9 +369,6 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
                         public void compute2() {
                           computeCrossValidation();
                           tryComplete();
-                          if (_modelBuilderListener != null) {
-                            _modelBuilderListener.onModelSuccess(_job.get());
-                          }
                         }
                         @Override
                         public boolean onExceptionalCompletion(Throwable ex, CountedCompleter caller) {
@@ -378,9 +377,6 @@ abstract public class ModelBuilder<M extends Model<M,P,O>, P extends Model.Param
                             Keyed.remove(_job._result); //ensure there's no incomplete model left for manipulation after crash or cancellation
                           } catch (Exception logged) {
                             Log.warn("Exception thrown when removing result from job "+ _job._description, logged);
-                          }
-                          if (_modelBuilderListener != null) {
-                            _modelBuilderListener.onModelFailure(ex, _parms);
                           }
                           return true;
                         }
