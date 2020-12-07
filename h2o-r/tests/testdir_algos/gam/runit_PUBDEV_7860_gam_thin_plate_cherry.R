@@ -8,7 +8,7 @@ library(mgcv)
 test.model.gam.thin.plates <- function() {
     data(trees)
     browser()
-    ct1 <- gam(Volume ~ s(Height, Girth, k = 25, sp = 0.1), family=Gamma(link=log), data=trees)
+    ct1 <- gam(Volume ~ s(Height, Girth, k = 6, sp = 0.1), family=Gamma(link=log), data=trees)
 }
 
 doTest("GAM with thin plate regression splines with cherry", test.model.gam.thin.plates)
