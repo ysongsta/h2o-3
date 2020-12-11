@@ -3049,11 +3049,14 @@ public class GLM extends ModelBuilder<GLMModel,GLMParameters,GLMOutput> {
     }
 
     public BetaConstraint(Frame beta_constraints) {
+      Log.debug("Beta constraints before encoding:" + beta_constraints.toTwoDimTable().toString());
       beta_constraints = encodeCategoricalsIfPresent(beta_constraints);
+      Log.debug("Beta constraints after encoding:" + beta_constraints.toTwoDimTable().toString());
       Vec v = beta_constraints.vec("names");
       String[] dom;
       int[] map;
       if (v.isString()) {
+        Log.debug("beta_constraints.vec(\"names\").isString() == true");
         dom = new String[(int) v.length()];
         map = new int[dom.length];
         BufferedString tmpStr = new BufferedString();
@@ -3061,18 +3064,24 @@ public class GLM extends ModelBuilder<GLMModel,GLMParameters,GLMOutput> {
           dom[i] = v.atStr(tmpStr, i).toString();
           map[i] = i;
         }
+        Log.debug("beta_constraints.vec(\"names\") domain: " + Arrays.toString(dom));
         // check for dups
         String[] sortedDom = dom.clone();
         Arrays.sort(sortedDom);
+        Log.debug("beta_constraints.vec(\"names\") sorted domain: " + Arrays.toString(sortedDom));
         for (int i = 1; i < sortedDom.length; ++i)
           if (sortedDom[i - 1].equals(sortedDom[i]))
             throw new IllegalArgumentException("Illegal beta constraints file, got duplicate constraint for predictor '" + sortedDom[i - 1] + "'!");
       } else if (v.isCategorical()) {
+        Log.debug("beta_constraints.vec(\"names\").isCategorical() == true");
         dom = v.domain();
         map = FrameUtils.asInts(v);
+        Log.debug("beta_constraints.vec(\"names\") domain: " + Arrays.toString(dom));
+        Log.debug("beta_constraints.vec(\"names\") map: " + Arrays.toString(map));
         // check for dups
         int[] sortedMap = MemoryManager.arrayCopyOf(map, map.length);
         Arrays.sort(sortedMap);
+        Log.debug("beta_constraints.vec(\"names\") sorted map: " + Arrays.toString(sortedMap));
         for (int i = 1; i < sortedMap.length; ++i)
           if (sortedMap[i - 1] == sortedMap[i])
             throw new IllegalArgumentException("Illegal beta constraints file, got duplicate constraint for predictor '" + dom[sortedMap[i - 1]] + "'!");
