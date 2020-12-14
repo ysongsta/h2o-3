@@ -509,7 +509,7 @@ with_no_h2o_progress <- function(expr) {
   for (col in names(domains)) {
     if (!is.null(domains[[col]])) {
       for (domain in c("missing(NA)", domains[[col]])) {
-        col_domain_mapping[[paste0(col, ".", domain)]] <- col
+        col_domain_mapping[[paste0(col, "[", domain, "]")]] <- col
       }
     }
   }
@@ -1107,11 +1107,11 @@ h2o.shap_summary_plot <-
             cat_name <- cat
             if (is.na(cat_name)) {
               cat_name <- "missing.NA."
-              newdata_df[[paste(fct, cat_name, sep = ".")]] <-
+              newdata_df[[paste0(fct, ".", cat_name, ".")]] <-
                 as.numeric(is.na(newdata_df[[fct]]))
             } else {
               cat_name <- gsub("[^0-9a-zA-Z]", ".", cat_name)
-              newdata_df[[paste(fct, cat_name, sep = ".")]] <-
+              newdata_df[[paste0(fct, ".", cat_name, ".")]] <-
                 as.numeric(newdata_df[[fct]] == cat)
             }
           }
@@ -1313,11 +1313,11 @@ h2o.shap_explain_row_plot <-
             cat_name <- cat
             if (is.na(cat_name)) {
               cat_name <- "missing.NA."
-              newdata_df[[paste(fct, cat_name, sep = ".")]] <-
+              newdata_df[[paste0(fct, ".", cat_name, ".")]] <-
                 as.numeric(is.na(newdata_df[[fct]]))
             } else {
               cat_name <- gsub("[^0-9a-zA-Z]", ".", cat_name)
-              newdata_df[[paste(fct, cat_name, sep = ".")]] <-
+              newdata_df[[paste0(fct, ".", cat_name, ".")]] <-
                 as.numeric(newdata_df[[fct]] == cat)
             }
           }
