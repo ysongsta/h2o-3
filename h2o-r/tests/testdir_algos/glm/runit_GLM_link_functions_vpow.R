@@ -10,9 +10,9 @@ source("../../../scripts/h2o-r-test-setup.R")
 
 test_tweedie <- function() {
   
-  require(testthat)
-  require(statmod)
-  require(HDtweedie)
+  library(testthat)
+  library(statmod)
+  library(HDtweedie)
   
   # Load example data from HDtweedie, y = aggregate claim loss
   data(auto)

@@ -23,8 +23,7 @@ test.glm.interactions_valid <- function() {
     df.expanded.2$Origin <- NULL
     df.expanded.2$UniqueCarrier <- NULL
     colnames(df.expanded.2) <- sub("trick_", "", colnames(df.expanded.2), fixed = TRUE)
-    colnames(df.expanded.2) <- sub('\\.A_', ".", colnames(df.expanded.2))
-
+    colnames(df.expanded.2) <- sub('\\[A_', "[", colnames(df.expanded.2))
     # Dimensions are ok
     expect_equal(dim(df.expanded.1), dim(df.expanded.2))
     # Column content matches

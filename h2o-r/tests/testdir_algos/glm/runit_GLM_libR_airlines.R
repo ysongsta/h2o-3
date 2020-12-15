@@ -12,7 +12,7 @@ test.LiblineaR.airlines <- function() {
     Log.info("   cost = 100: Cost of constraints parameter\n")
     Log.info("epsilon = 1E-4: Tolerance of termination criterion\n")
     Log.info("  cross =    0: No kfold cross-validation\n")
-    
+
     LibR.m        <- LiblineaR(train, trainLabels,type=0, epsilon=1E-4, cost=100)
     LibRpreds     <- predict(LibR.m, test, proba=1, decisionValues=TRUE)
     LibRCM        <- table(testLabels, LibRpreds$predictions)
@@ -97,12 +97,12 @@ test.LiblineaR.airlines <- function() {
   trainhex$IsDepDelayed_REC <- trainhex$IsDepDelayed_REC == 1
   trainhex$IsDepDelayed_REC <- as.factor(trainhex$IsDepDelayed_REC)
   testhex$IsDepDelayed_REC  <- testhex$IsDepDelayed_REC == 1
-   
+
   #xTrain  <- scale(model.matrix(IsDepDelayed_REC ~., aTrain[,-11])[,-1])
-  xTrain  <- scale(data.frame(aTrain$DepTime, aTrain$ArrTime, aTrain$Distance))
+  xTrain  <- scale(data.frame(DepTime = aTrain$DepTime, ArrTime = aTrain$ArrTime, Distance = aTrain$Distance))
   yTrain  <- aTrain[,12]
   #xTest   <- model.matrix(IsDepDelayed_REC ~., aTest[-11])[,-1]
-  xTest   <- scale(data.frame(aTest$DepTime, aTest$ArrTime, aTest$Distance))
+  xTest   <- scale(data.frame(DepTime = aTest$DepTime, ArrTime = aTest$ArrTime, Distance = aTest$Distance))
   yTest   <- aTest[,12]
   train <- xTrain
   trainLabels <- yTrain

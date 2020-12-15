@@ -33,7 +33,7 @@ test.glm.interactions_pubdev5277 <- function() {
     expect_equal(m1@model$training_metrics@metrics$logloss, m2@model$training_metrics@metrics$logloss, tolerance = 0.001, scale = 1)
 
     # Coefficients of numeric features from the orginal dataset are reasonably similar in both models
-    simple.coef <- setdiff(m1@model$coefficients_table$names[grep('\\.', m1@model$coefficients_table$names, invert = TRUE)], "Intercept")
+    simple.coef <- setdiff(m1@model$coefficients_table$names[grep('\\[', m1@model$coefficients_table$names, invert = TRUE)], "Intercept")
     print("Comparing intercept of m1 and m2")
     print(m1@model$coefficients["Intercept"]-m2@model$coefficients["Intercept"])
     expect_equal(m1@model$coefficients["Intercept"], m2@model$coefficients["Intercept"], tolerance = 0.01, scale = m1@model$coefficients["Intercept"])
@@ -43,11 +43,11 @@ test.glm.interactions_pubdev5277 <- function() {
 
     # Coefficients for interactions don't match (one example:) - needs to be fixed in PUBDEV-5277
     print("Comparing coefficients of m1 and 0.346")
-    print(abs(0.346 - m1@model$coefficients["UniqueCarrier_Origin.AA_ABQ"]))
-    expect_true(abs(0.346 - m1@model$coefficients["UniqueCarrier_Origin.AA_ABQ"]) < 0.01)
+    print(abs(0.346 - m1@model$coefficients["UniqueCarrier_Origin[AA_ABQ]"]))
+    expect_true(abs(0.346 - m1@model$coefficients["UniqueCarrier_Origin[AA_ABQ]"]) < 0.01)
     print("Comparing coefficients of m2 and 7.456")
-    print(abs(7.456 - m2@model$coefficients["UniqueCarrier_Origin.AA_ABQ"]))
-    expect_true(abs(7.456 - m2@model$coefficients["UniqueCarrier_Origin.AA_ABQ"]) < 0.1)
+    print(abs(7.456 - m2@model$coefficients["UniqueCarrier_Origin[AA_ABQ]"]))
+    expect_true(abs(7.456 - m2@model$coefficients["UniqueCarrier_Origin[AA_ABQ]"]) < 0.1)
 }
 
 doTest("Demonstrates that 2 GLM runs with implicit interactions and explicit interactions differ", test.glm.interactions_pubdev5277)
