@@ -1290,11 +1290,11 @@ public class GLMTest  extends TestUtil {
       for (String s : coefs2.keySet()) {
         String s1 = s;
         if (s.startsWith("Origin"))
-          s1 = "Origin." + s.substring(6);
+          s1 = "Origin[" + s.substring(6) + "]";
         if (s.startsWith("Dest"))
-          s1 = "Dest." + s.substring(4);
+          s1 = "Dest[" + s.substring(4) + "]";
         if (s.startsWith("UniqueCarrier"))
-          s1 = "UniqueCarrier." + s.substring(13);
+          s1 = "UniqueCarrier[" + s.substring(13) + "]";
         if(Math.abs(coefs1.get(s1) - coefs2.get(s)) > 1e-4) {
           System.out.println("coeff " + s1 + " differs, " + coefs1.get(s1) + " != " + coefs2.get(s));
           failed = true;
@@ -1652,7 +1652,7 @@ public class GLMTest  extends TestUtil {
 //      Coefficients:
 //        (Intercept)           ID          AGE       RACER2       RACER3        DPROS        DCAPS          PSA          VOL      GLEASON
 //          -8.894088     0.001588    -0.009589     0.231777    -0.459937     0.556231     0.556395     0.027854    -0.011355     1.010179
-      String [] cfs1 = new String [] {"Intercept","AGE", "RACE.R2","RACE.R3", "DPROS", "DCAPS", "PSA", "VOL", "GLEASON"};
+      String [] cfs1 = new String [] {"Intercept","AGE", "RACE[R2]","RACE[R3]", "DPROS", "DCAPS", "PSA", "VOL", "GLEASON"};
       double [] vals = new double [] {-8.14867, -0.01368, 0.32337, -0.38028, 0.55964, 0.49548, 0.02794, -0.01104, 0.97704};
       GLMParameters params = new GLMParameters(Family.binomial);
       params._response_column = "CAPSULE";
@@ -1770,7 +1770,7 @@ public class GLMTest  extends TestUtil {
 //      Coefficients:
 //        (Intercept)           ID          AGE       RACER2       RACER3        DPROS        DCAPS          PSA          VOL      GLEASON
 //          -8.894088     0.001588    -0.009589     0.231777    -0.459937     0.556231     0.556395     0.027854    -0.011355     1.010179
-      String[] cfs1 = new String[]{"Intercept", "AGE", "RACE.R2", "RACE.R3", "DPROS", "DCAPS", "PSA", "VOL", "GLEASON"};
+      String[] cfs1 = new String[]{"Intercept", "AGE", "RACE[R2]", "RACE[R3]", "DPROS", "DCAPS", "PSA", "VOL", "GLEASON"};
       double[] vals = new double[]{-8.14867, -0.01368, 0.32337, -0.38028, 0.55964, 0.49548, 0.02794, -0.01104, 0.97704};
       params = new GLMParameters(Family.quasibinomial);
       params._response_column = "CAPSULE";
@@ -2194,19 +2194,19 @@ public class GLMTest  extends TestUtil {
       System.out.println("coefficients = " + m.coefficients());
       double icpt = m.coefficients().get("Intercept");
       Frame preds = m.score(tst);
-      Assert.assertEquals(icpt+m.coefficients().get("color.red"), preds.vec(0).at(0), 0);
-      Assert.assertEquals(icpt+m.coefficients().get("color.blue"), preds.vec(0).at(1), 0);
-      Assert.assertEquals(icpt+m.coefficients().get("color.blue"), preds.vec(0).at(2), 0);
+      Assert.assertEquals(icpt+m.coefficients().get("color[red]"), preds.vec(0).at(0), 0);
+      Assert.assertEquals(icpt+m.coefficients().get("color[blue]"), preds.vec(0).at(1), 0);
+      Assert.assertEquals(icpt+m.coefficients().get("color[blue]"), preds.vec(0).at(2), 0);
       Assert.assertEquals(icpt, preds.vec(0).at(3), 0);
       parms2._missing_values_handling = MissingValuesHandling.MeanImputation;
       GLMModel m2 = new GLM(parms2).trainModel().get();
       Frame preds2 = m2.score(tst);
       icpt = m2.coefficients().get("Intercept");
       System.out.println("coefficients = " + m2.coefficients());
-      Assert.assertEquals(icpt+m2.coefficients().get("color.red"), preds2.vec(0).at(0), 0);
-      Assert.assertEquals(icpt+m2.coefficients().get("color.blue"), preds2.vec(0).at(1), 0);
-      Assert.assertEquals(icpt+m2.coefficients().get("color.blue"), preds2.vec(0).at(2), 0);
-      Assert.assertEquals(icpt+m2.coefficients().get("color.red"), preds2.vec(0).at(3), 0);
+      Assert.assertEquals(icpt+m2.coefficients().get("color[red]"), preds2.vec(0).at(0), 0);
+      Assert.assertEquals(icpt+m2.coefficients().get("color[blue]"), preds2.vec(0).at(1), 0);
+      Assert.assertEquals(icpt+m2.coefficients().get("color[blue]"), preds2.vec(0).at(2), 0);
+      Assert.assertEquals(icpt+m2.coefficients().get("color[red]"), preds2.vec(0).at(3), 0);
       trn.delete();
       tst.delete();
       m.delete();

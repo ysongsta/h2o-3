@@ -329,7 +329,7 @@ public class GLMBasicTestRegression extends TestUtil {
 
     // ---------------------------------------------------------------------------------------------------------------------------
 
-    String [] cfs1   = new String  []  { "Intercept", "Swimmer.Occas", "Location.NonBeach", "Age.20-24", "Age.25-29", "Sex.Male" };
+    String [] cfs1   = new String  []  { "Intercept", "Swimmer[Occas]", "Location[NonBeach]", "Age[20-24]", "Age[25-29]", "Sex[Male]" };
     double [][] vals = new double[][] {{     0.89100,         0.82210,             0.72660,    -0.50330,    -0.26790,   -0.10560 },
                                        {    -0.12261,         0.61149,             0.53454,    -0.37442,    -0.18973,   -0.08985 },
                                        {     1.02964,        -0.14079,            -0.12200,     0.08502,     0.04269,    0.02105 },
@@ -402,7 +402,7 @@ public class GLMBasicTestRegression extends TestUtil {
 //    Degrees of Freedom: 19 Total (i.e. Null);  12 Residual
 //    Null Deviance:	    33850
 //    Residual Deviance: 579.5 	AIC: 805.9
-    String [] cfs1 = new String [] { "Intercept", "Merit.1", "Merit.2", "Merit.3", "Class.2", "Class.3", "Class.4", "Class.5"};
+    String [] cfs1 = new String [] { "Intercept", "Merit[1]", "Merit[2]", "Merit[3]", "Class[2]", "Class[3]", "Class[4]", "Class[5]"};
     double [] vals = new double [] { -2.0357,     -0.1378,  -0.2207,  -0.4930,   0.2998,   0.4691,   0.5259,    0.2156};
       for (Solver s : GLMParameters.Solver.values()) {
         if(s == Solver.COORDINATE_DESCENT_NAIVE || s.equals(Solver.GRADIENT_DESCENT_LH)
@@ -506,7 +506,7 @@ public class GLMBasicTestRegression extends TestUtil {
     Frame predict = null;
     try {
       model = new GLM(parms).trainModel().get();
-      String[] names_expected = new String[]{"Intercept", "Swimmer.Occas", "Location.NonBeach", "Age.20-24", "Age.25-29", "Sex.Male"};
+      String[] names_expected = new String[]{"Intercept", "Swimmer[Occas]", "Location[NonBeach]", "Age[20-24]", "Age[25-29]", "Sex[Male]"};
       String[] names_actual = model._output.coefficientNames();
       HashMap<String, Integer> coefMap = new HashMap<>();
       for (int i = 0; i < names_expected.length; ++i)
@@ -579,7 +579,7 @@ public class GLMBasicTestRegression extends TestUtil {
     try {
       model = new GLM(parms).trainModel().get();
       predict = model.score(parms._train.get());
-      String[] names_expected = new String[]{"Intercept",  "Merit.1", "Merit.2", "Merit.3", "Class.2", "Class.3", "Class.4", "Class.5","Insured","Premium", "Cost", "logInsured" };
+      String[] names_expected = new String[]{"Intercept",  "Merit[1]", "Merit[2]", "Merit[3]", "Class[2]", "Class[3]", "Class[4]", "Class[5]","Insured","Premium", "Cost", "logInsured" };
       String[] names_actual = model._output.coefficientNames();
       HashMap<String, Integer> coefMap = new HashMap<>();
       for (int i = 0; i < names_expected.length; ++i)
@@ -696,7 +696,7 @@ public class GLMBasicTestRegression extends TestUtil {
       Frame predict = null;
       try {
         model = new GLM(params).trainModel().get();
-        String[] names_expected = new String[]{"Intercept", "ID", "AGE", "RACE.R2", "RACE.R3", "DPROS.b", "DPROS.c", "DPROS.d", "DCAPS.b", "PSA", "VOL", "GLEASON"};
+        String[] names_expected = new String[]{"Intercept", "ID", "AGE", "RACE[R2]", "RACE[R3]", "DPROS[b]", "DPROS[c]", "DPROS[d]", "DCAPS[b]", "PSA", "VOL", "GLEASON"};
         double[] stder_expected = new double[]{0.4035941476, 0.0002387281, 0.0040245520, 0.2511007120, 0.2593492335, 0.0657117271, 0.0713659021, 0.0937207659, 0.0888124376, 0.0015060289, 0.0013919737, 0.0273258788};
         double[] zvals_expected = new double[]{-1.70241133, 1.29061005, -0.14920829, -0.05883397, -0.56178799, 2.22564893, 3.21891333, 1.22168646, 1.61119882, 3.13650800, -1.39379859, 5.26524961};
         double[] pvals_expected = new double[]{8.979610e-02, 1.979113e-01, 8.814975e-01, 9.531266e-01, 5.747131e-01, 2.683977e-02, 1.439295e-03, 2.228612e-01, 1.082711e-01, 1.893210e-03, 1.644916e-01, 2.805776e-07};
@@ -775,7 +775,7 @@ public class GLMBasicTestRegression extends TestUtil {
 
       try {
         model = new GLM(params).trainModel().get();
-        String[] names_expected = new String[]{"Intercept", "ID", "AGE", "RACE.R2", "RACE.R3", "DPROS.b", "DPROS.c", "DPROS.d", "DCAPS.b", "PSA", "VOL", "GLEASON"};
+        String[] names_expected = new String[]{"Intercept", "ID", "AGE", "RACE[R2]", "RACE[R3]", "DPROS[b]", "DPROS[c]", "DPROS[d]", "DCAPS[b]", "PSA", "VOL", "GLEASON"};
         // do not compare std_err here, depends on the coefficients
 //      double[] stder_expected = new double[]{1.5687858,   0.1534062,   0.1449847,   1.5423974, 1.5827190,   0.3950883,   0.4161974,  0.5426512,   0.5179591,   0.2244733, 0.1620383,   0.1963285};
 //      double[] zvals_expected = new double[]{1.14158283,  1.29061005, -0.14920829, -0.05883397, -0.56178799, 2.22564893,  3.21891333,  1.22168646,  1.61119882,  3.13650800, -1.39379859,  5.26524961 };
@@ -813,7 +813,7 @@ public class GLMBasicTestRegression extends TestUtil {
       params._ignored_columns = new String[]{"IsDepDelayed_REC"};
       try {
         model = new GLM(params).trainModel().get();
-        String[] names_expected = new String[]{"Intercept", "fYearf1988", "fYearf1989", "fYearf1990", "fYearf1991", "fYearf1992", "fYearf1993", "fYearf1994", "fYearf1995", "fYearf1996", "fYearf1997", "fYearf1998", "fYearf1999", "fYearf2000", "fDayofMonthf10", "fDayofMonthf11", "fDayofMonthf12", "fDayofMonthf13", "fDayofMonthf14", "fDayofMonthf15", "fDayofMonthf16", "fDayofMonthf17", "fDayofMonthf18", "fDayofMonthf19", "fDayofMonthf2", "fDayofMonthf20", "fDayofMonthf21", "fDayofMonthf22", "fDayofMonthf23", "fDayofMonthf24", "fDayofMonthf25", "fDayofMonthf26", "fDayofMonthf27", "fDayofMonthf28", "fDayofMonthf29", "fDayofMonthf3", "fDayofMonthf30", "fDayofMonthf31", "fDayofMonthf4", "fDayofMonthf5", "fDayofMonthf6", "fDayofMonthf7", "fDayofMonthf8", "fDayofMonthf9", "fDayOfWeekf2", "fDayOfWeekf3", "fDayOfWeekf4", "fDayOfWeekf5", "fDayOfWeekf6", "fDayOfWeekf7", "DepTime", "ArrTime", "UniqueCarrierCO", "UniqueCarrierDL", "UniqueCarrierHP", "UniqueCarrierPI", "UniqueCarrierTW", "UniqueCarrierUA", "UniqueCarrierUS", "UniqueCarrierWN", "OriginABQ", "OriginACY", "OriginALB", "OriginATL", "OriginAUS", "OriginAVP", "OriginBDL", "OriginBGM", "OriginBHM", "OriginBNA", "OriginBOS", "OriginBTV", "OriginBUF", "OriginBUR", "OriginBWI", "OriginCAE", "OriginCHO", "OriginCHS", "OriginCLE", "OriginCLT", "OriginCMH", "OriginCOS", "OriginCRW", "OriginCVG", "OriginDAY", "OriginDCA", "OriginDEN", "OriginDFW", "OriginDSM", "OriginDTW", "OriginERI", "OriginEWR", "OriginFLL", "OriginGSO", "OriginHNL", "OriginIAD", "OriginIAH", "OriginICT", "OriginIND", "OriginISP", "OriginJAX", "OriginJFK", "OriginLAS", "OriginLAX", "OriginLEX", "OriginLGA", "OriginLIH", "OriginLYH", "OriginMCI", "OriginMCO", "OriginMDT", "OriginMDW", "OriginMFR", "OriginMHT", "OriginMIA", "OriginMKE", "OriginMLB", "OriginMRY", "OriginMSP", "OriginMSY", "OriginMYR", "OriginOAK", "OriginOGG", "OriginOMA", "OriginORD", "OriginORF", "OriginPBI", "OriginPHF", "OriginPHL", "OriginPHX", "OriginPIT", "OriginPSP", "OriginPVD", "OriginPWM", "OriginRDU", "OriginRIC", "OriginRNO", "OriginROA", "OriginROC", "OriginRSW", "OriginSAN", "OriginSBN", "OriginSCK", "OriginSDF", "OriginSEA", "OriginSFO", "OriginSJC", "OriginSJU", "OriginSLC", "OriginSMF", "OriginSNA", "OriginSRQ", "OriginSTL", "OriginSTX", "OriginSWF", "OriginSYR", "OriginTLH", "OriginTPA", "OriginTRI", "OriginTUS", "OriginTYS", "OriginUCA", "DestABQ", "DestACY", "DestALB", "DestATL", "DestAVP", "DestBDL", "DestBGM", "DestBNA", "DestBOS", "DestBTV", "DestBUF", "DestBUR", "DestBWI", "DestCAE", "DestCAK", "DestCHA", "DestCHS", "DestCLE", "DestCLT", "DestCMH", "DestDAY", "DestDCA", "DestDEN", "DestDFW", "DestDTW", "DestELM", "DestERI", "DestEWR", "DestFAT", "DestFAY", "DestFLL", "DestFNT", "DestGEG", "DestGRR", "DestGSO", "DestGSP", "DestHNL", "DestHTS", "DestIAD", "DestIAH", "DestICT", "DestIND", "DestISP", "DestJAX", "DestJFK", "DestKOA", "DestLAS", "DestLAX", "DestLEX", "DestLGA", "DestLIH", "DestLYH", "DestMCI", "DestMCO", "DestMDT", "DestMDW", "DestMHT", "DestMIA", "DestMRY", "DestMSY", "DestOAJ", "DestOAK", "DestOGG", "DestOMA", "DestORD", "DestORF", "DestORH", "DestPBI", "DestPDX", "DestPHF", "DestPHL", "DestPHX", "DestPIT", "DestPSP", "DestPVD", "DestRDU", "DestRIC", "DestRNO", "DestROA", "DestROC", "DestRSW", "DestSAN", "DestSCK", "DestSDF", "DestSEA", "DestSFO", "DestSJC", "DestSMF", "DestSNA", "DestSTL", "DestSWF", "DestSYR", "DestTOL", "DestTPA", "DestTUS", "DestUCA", "Distance"};
+        String[] names_expected = new String[]{"Intercept", "fYear[f1988]", "fYear[f1989]", "fYear[f1990]", "fYear[f1991]", "fYear[f1992]", "fYear[f1993]", "fYear[f1994]", "fYear[f1995]", "fYear[f1996]", "fYear[f1997]", "fYear[f1998]", "fYear[f1999]", "fYear[f2000]", "fDayofMonth[f10]", "fDayofMonth[f11]", "fDayofMonth[f12]", "fDayofMonth[f13]", "fDayofMonth[f14]", "fDayofMonth[f15]", "fDayofMonth[f16]", "fDayofMonth[f17]", "fDayofMonth[f18]", "fDayofMonth[f19]", "fDayofMonth[f2]", "fDayofMonth[f20]", "fDayofMonth[f21]", "fDayofMonth[f22]", "fDayofMonth[f23]", "fDayofMonth[f24]", "fDayofMonth[f25]", "fDayofMonth[f26]", "fDayofMonth[f27]", "fDayofMonth[f28]", "fDayofMonth[f29]", "fDayofMonth[f3]", "fDayofMonth[f30]", "fDayofMonth[f31]", "fDayofMonth[f4]", "fDayofMonth[f5]", "fDayofMonth[f6]", "fDayofMonth[f7]", "fDayofMonth[f8]", "fDayofMonth[f9]", "fDayOfWeek[f2]", "fDayOfWeek[f3]", "fDayOfWeek[f4]", "fDayOfWeek[f5]", "fDayOfWeek[f6]", "fDayOfWeek[f7]", "DepTime", "ArrTime", "UniqueCarrier[CO]", "UniqueCarrier[DL]", "UniqueCarrier[HP]", "UniqueCarrier[PI]", "UniqueCarrier[TW]", "UniqueCarrier[UA]", "UniqueCarrier[US]", "UniqueCarrier[WN]", "Origin[ABQ]", "Origin[ACY]", "Origin[ALB]", "Origin[ATL]", "Origin[AUS]", "Origin[AVP]", "Origin[BDL]", "Origin[BGM]", "Origin[BHM]", "Origin[BNA]", "Origin[BOS]", "Origin[BTV]", "Origin[BUF]", "Origin[BUR]", "Origin[BWI]", "Origin[CAE]", "Origin[CHO]", "Origin[CHS]", "Origin[CLE]", "Origin[CLT]", "Origin[CMH]", "Origin[COS]", "Origin[CRW]", "Origin[CVG]", "Origin[DAY]", "Origin[DCA]", "Origin[DEN]", "Origin[DFW]", "Origin[DSM]", "Origin[DTW]", "Origin[ERI]", "Origin[EWR]", "Origin[FLL]", "Origin[GSO]", "Origin[HNL]", "Origin[IAD]", "Origin[IAH]", "Origin[ICT]", "Origin[IND]", "Origin[ISP]", "Origin[JAX]", "Origin[JFK]", "Origin[LAS]", "Origin[LAX]", "Origin[LEX]", "Origin[LGA]", "Origin[LIH]", "Origin[LYH]", "Origin[MCI]", "Origin[MCO]", "Origin[MDT]", "Origin[MDW]", "Origin[MFR]", "Origin[MHT]", "Origin[MIA]", "Origin[MKE]", "Origin[MLB]", "Origin[MRY]", "Origin[MSP]", "Origin[MSY]", "Origin[MYR]", "Origin[OAK]", "Origin[OGG]", "Origin[OMA]", "Origin[ORD]", "Origin[ORF]", "Origin[PBI]", "Origin[PHF]", "Origin[PHL]", "Origin[PHX]", "Origin[PIT]", "Origin[PSP]", "Origin[PVD]", "Origin[PWM]", "Origin[RDU]", "Origin[RIC]", "Origin[RNO]", "Origin[ROA]", "Origin[ROC]", "Origin[RSW]", "Origin[SAN]", "Origin[SBN]", "Origin[SCK]", "Origin[SDF]", "Origin[SEA]", "Origin[SFO]", "Origin[SJC]", "Origin[SJU]", "Origin[SLC]", "Origin[SMF]", "Origin[SNA]", "Origin[SRQ]", "Origin[STL]", "Origin[STX]", "Origin[SWF]", "Origin[SYR]", "Origin[TLH]", "Origin[TPA]", "Origin[TRI]", "Origin[TUS]", "Origin[TYS]", "Origin[UCA]", "Dest[ABQ]", "Dest[ACY]", "Dest[ALB]", "Dest[ATL]", "Dest[AVP]", "Dest[BDL]", "Dest[BGM]", "Dest[BNA]", "Dest[BOS]", "Dest[BTV]", "Dest[BUF]", "Dest[BUR]", "Dest[BWI]", "Dest[CAE]", "Dest[CAK]", "Dest[CHA]", "Dest[CHS]", "Dest[CLE]", "Dest[CLT]", "Dest[CMH]", "Dest[DAY]", "Dest[DCA]", "Dest[DEN]", "Dest[DFW]", "Dest[DTW]", "Dest[ELM]", "Dest[ERI]", "Dest[EWR]", "Dest[FAT]", "Dest[FAY]", "Dest[FLL]", "Dest[FNT]", "Dest[GEG]", "Dest[GRR]", "Dest[GSO]", "Dest[GSP]", "Dest[HNL]", "Dest[HTS]", "Dest[IAD]", "Dest[IAH]", "Dest[ICT]", "Dest[IND]", "Dest[ISP]", "Dest[JAX]", "Dest[JFK]", "Dest[KOA]", "Dest[LAS]", "Dest[LAX]", "Dest[LEX]", "Dest[LGA]", "Dest[LIH]", "Dest[LYH]", "Dest[MCI]", "Dest[MCO]", "Dest[MDT]", "Dest[MDW]", "Dest[MHT]", "Dest[MIA]", "Dest[MRY]", "Dest[MSY]", "Dest[OAJ]", "Dest[OAK]", "Dest[OGG]", "Dest[OMA]", "Dest[ORD]", "Dest[ORF]", "Dest[ORH]", "Dest[PBI]", "Dest[PDX]", "Dest[PHF]", "Dest[PHL]", "Dest[PHX]", "Dest[PIT]", "Dest[PSP]", "Dest[PVD]", "Dest[RDU]", "Dest[RIC]", "Dest[RNO]", "Dest[ROA]", "Dest[ROC]", "Dest[RSW]", "Dest[SAN]", "Dest[SCK]", "Dest[SDF]", "Dest[SEA]", "Dest[SFO]", "Dest[SJC]", "Dest[SMF]", "Dest[SNA]", "Dest[STL]", "Dest[SWF]", "Dest[SYR]", "Dest[TOL]", "Dest[TPA]", "Dest[TUS]", "Dest[UCA]", "Distance"};
         double[] exp_coefs = new double[]{3.383044e-01, -1.168214e-01, -4.405621e-01, -3.365341e-01, -4.925256e-01, -5.374542e-01, -4.149143e-01, -2.694969e-01, -2.991095e-01, -2.776553e-01, -2.921466e-01, -4.336252e-01
                 , -3.597812e-01, -3.812643e-01, 1.024025e-02, 2.549787e-02, 3.877628e-02, 1.650942e-02, -2.981043e-02, -1.167855e-02, 1.025499e-02, -4.574083e-03, -2.502898e-02, -5.803535e-02
                 , 7.679039e-02, -5.247306e-02, -5.918685e-02, -3.339667e-02, -2.885718e-02, -4.225694e-02, -7.500997e-02, -5.145179e-02, -7.093373e-02, -5.634115e-02, -3.643811e-02, 1.284665e-01
@@ -911,7 +911,7 @@ public class GLMBasicTestRegression extends TestUtil {
           coefMap.put(names_expected[i], i);
         double[] coefs_actual = model._output._global_beta;
         for (int i = 0; i < exp_coefs.length; ++i) {
-          String s = removeDot(names_actual[i]);
+          String s = names_actual[i];
           if (!coefMap.containsKey(s)) { // removed col, check we removed it too
             assertTrue(coefs_actual[i] == 0 && Double.isNaN(zvals_actual[i]));
             System.out.println("found removed col " + s);
@@ -1385,12 +1385,6 @@ public class GLMBasicTestRegression extends TestUtil {
       xy[dinfo._numOffsets[predInd]] += wz * d;
     }
     xy[coeffPClass - 1] += wz;
-  }
-  
-  private static String removeDot(String s) {
-    int id = s.indexOf(".");
-    if(id ==-1) return s;
-    return s.substring(0,id) + s.substring(id+1);
   }
 
   @AfterClass

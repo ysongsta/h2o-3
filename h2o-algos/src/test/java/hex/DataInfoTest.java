@@ -428,7 +428,7 @@ public class DataInfoTest extends TestUtil {
       assertEquals(fr.vec("Origin").domain().length, dinfo.coefNames().length);
       String[] expected = new String[dinfo.coefNames().length];
       for (int i = 0; i < expected.length; i++)
-        expected[i] = "Origin_Distance." + sfr.vec("Origin").domain()[i];
+        expected[i] = "Origin_Distance[" + sfr.vec("Origin").domain()[i] + "]";
       Assert.assertArrayEquals(expected, dinfo.coefNames());
       dinfo.dropInteractions();
       dinfo.remove();
@@ -464,7 +464,7 @@ public class DataInfoTest extends TestUtil {
       String[] expected = new String[dinfo.coefNames().length];
       expected[expected.length - 1] = "Distance";
       for (int i = 0; i < expected.length - 1; i++)
-        expected[i] = "Origin_Distance." + fr.vec("Origin").domain()[i + 1];
+        expected[i] = "Origin_Distance[" + fr.vec("Origin").domain()[i + 1] + "]";
       Assert.assertArrayEquals(expected, dinfo.coefNames());
       // Check that we can look-up "Categorical Id" for valid levels
       for (int j = /*don't use all factor levels*/ 1; j < dinfo._adaptedFrame.vec(0).domain().length; j++) {
