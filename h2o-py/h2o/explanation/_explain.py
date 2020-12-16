@@ -260,7 +260,7 @@ class NumpyFrame:
         Get a column name and possibly a factor name.
         This is used to get proper column name and factor name when provided
         with the output of some algos such as XGBoost which encode factor
-        columns to "column_name[category_name]".
+        columns to "column_name{category_name}".
 
         :param column: string containing the column name
         :returns: tuple (column_name: str, factor_name: Optional[str])
@@ -268,7 +268,7 @@ class NumpyFrame:
         if column in self.columns:
             return column, None
         import re
-        match = re.match("^(?P<column>.*?)\[(?P<factor_name>.*)\]$", column)
+        match = re.match("^(?P<column>.*?)\{(?P<factor_name>.*)\}$", column)
         column = match.group("column")
         factor_name = match.group("factor_name")
         if factor_name == "missing(NA)":
@@ -1328,7 +1328,7 @@ def _consolidate_varimps(model):
     to_process = {k: v for k, v in varimp.items() if k not in x}
 
     domain_mapping = model.get_domain_mapping()
-    encoded_cols = ["{}[{}]".format(name, domain)
+    encoded_cols = ["{}{{{}}}".format(name, domain)
                     for name, domains in domain_mapping.items()
                     if domains is not None
                     for domain in domains + ["missing(NA)"]]
@@ -1337,7 +1337,7 @@ def _consolidate_varimps(model):
             encoded_cols.remove(x)
         raise RuntimeError("Ambiguous encoding of the column x category pairs: {}".format(set(encoded_cols)))
 
-    varimp_to_col = {"{}[{}]".format(name, domain): name
+    varimp_to_col = {"{}{{{}}}".format(name, domain): name
                      for name, domains in domain_mapping.items()
                      if domains is not None
                      for domain in domains + ["missing(NA)"]

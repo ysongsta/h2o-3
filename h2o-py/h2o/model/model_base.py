@@ -1783,18 +1783,6 @@ class ModelBase(h2o_meta(Keyed)):
         return dict(zip(output["names"], output["domains"]))
 
 
-def _get_matplotlib_pyplot(server):
-    try:
-        # noinspection PyUnresolvedReferences
-        import matplotlib
-        if server: matplotlib.use("Agg")
-        # noinspection PyUnresolvedReferences
-        import matplotlib.pyplot as plt
-        return plt
-    except ImportError:
-        print("`matplotlib` library is required for this function!")
-        return None
-
 def _get_mplot3d_pyplot(functionName):
     try:
         # noinspection PyUnresolvedReferences

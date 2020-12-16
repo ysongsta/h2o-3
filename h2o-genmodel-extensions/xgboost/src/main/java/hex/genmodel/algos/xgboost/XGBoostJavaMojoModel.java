@@ -175,8 +175,8 @@ public final class XGBoostJavaMojoModel extends XGBoostMojoModel implements Pred
         names[i++] = features[c];
       } else {
         for (String d : m._domains[c])
-          names[i++] = features[c] + "." + d;
-        names[i++] = features[c] + ".missing(NA)";
+          names[i++] = features[c] + "{" + d + "}";
+        names[i++] = features[c] + "{missing(NA)}";
       }
     }
     assert names.length == i;

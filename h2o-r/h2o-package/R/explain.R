@@ -509,7 +509,7 @@ with_no_h2o_progress <- function(expr) {
   for (col in names(domains)) {
     if (!is.null(domains[[col]])) {
       for (domain in c("missing(NA)", domains[[col]])) {
-        col_domain_mapping[[paste0(col, "[", domain, "]")]] <- col
+        col_domain_mapping[[paste0(col, "{", domain, "}")]] <- col
       }
     }
   }

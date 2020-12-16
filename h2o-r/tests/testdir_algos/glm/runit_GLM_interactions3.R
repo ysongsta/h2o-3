@@ -6,8 +6,8 @@ test.glm.interactions3 <- function() {
   interactions <- model.matrix(Petal.Width ~ Species*Sepal.Length, data=iris)[,5:6]
 
   df <- data.frame(Species=iris[,5],
-                   `Species_Sepal.Length[versicolor]` = interactions[,1],
-                   `Species_Sepal.Length[virginica]` = interactions[,2],
+                   `Species_Sepal.Length{versicolor}` = interactions[,1],
+                   `Species_Sepal.Length{virginica}` = interactions[,2],
                    Sepal.Length=iris[,"Sepal.Length"],
                    Sepal.Width=iris[,"Sepal.Width"],
                    Petal.Length=iris[,"Petal.Length"],
@@ -15,7 +15,7 @@ test.glm.interactions3 <- function() {
   check.names = FALSE)
 
   df <- as.h2o(df)
-  h2o_glm1 <- h2o.glm(y="Petal.Width", x=c("Species","Species_Sepal.Length[versicolor]", "Species_Sepal.Length[virginica]", "Sepal.Length","Sepal.Width", "Petal.Length"), training_frame=df, lambda=0, standardize=TRUE)
+  h2o_glm1 <- h2o.glm(y="Petal.Width", x=c("Species","Species_Sepal.Length{versicolor}", "Species_Sepal.Length{virginica}", "Sepal.Length","Sepal.Width", "Petal.Length"), training_frame=df, lambda=0, standardize=TRUE)
 
   h2o_glm2 <- h2o.glm(y="Petal.Width", x=c("Species","Sepal.Length","Sepal.Width", "Petal.Length"), interactions=c("Species", "Sepal.Length"), lambda=0, standardize=TRUE, training_frame=as.h2o(iris))
   R_glm <- lm(Petal.Width ~ Species*Sepal.Length + Sepal.Width + Petal.Length, data=iris)
@@ -28,10 +28,10 @@ test.glm.interactions3 <- function() {
     name <- names(m_R_coefs[i])
     print(name)
     if( name=="(Intercept)" )       name <- "Intercept"
-    if( name=="Speciesversicolor" ) name <- "Species[versicolor]"
-    if( name=="Speciesvirginica"  ) name <- "Species[virginica]"
-    if( name=="Speciesversicolor:Sepal.Length" ) name <- "Species_Sepal.Length[versicolor]"
-    if( name=="Speciesvirginica:Sepal.Length"  ) name <- "Species_Sepal.Length[virginica]"
+    if( name=="Speciesversicolor" ) name <- "Species{versicolor}"
+    if( name=="Speciesvirginica"  ) name <- "Species{virginica}"
+    if( name=="Speciesversicolor:Sepal.Length" ) name <- "Species_Sepal.Length{versicolor}"
+    if( name=="Speciesvirginica:Sepal.Length"  ) name <- "Species_Sepal.Length{virginica}"
 
     print(name)
     h2o_coef1 <- h2o_glm1_coefs[h2o_glm1_coefs$names==name,"coefficients"]

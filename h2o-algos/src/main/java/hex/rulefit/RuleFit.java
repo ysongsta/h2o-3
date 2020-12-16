@@ -414,7 +414,7 @@ public class RuleFit extends ModelBuilder<RuleFitModel, RuleFitModel.RuleFitPara
             Rule rule;
             for (Map.Entry<String, Double> entry : filteredRules.entrySet()) {
                 if (!entry.getKey().startsWith("linear.")) {
-                    rule = ruleEnsemble.getRuleByVarName(entry.getKey().substring(entry.getKey().lastIndexOf("[") + 1, entry.getKey().length() - 1));
+                    rule = ruleEnsemble.getRuleByVarName(entry.getKey().substring(entry.getKey().lastIndexOf("{") + 1, entry.getKey().length() - 1));
                 } else {
                     rule = new Rule(null, entry.getValue(), entry.getKey());
                 }
