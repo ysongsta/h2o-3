@@ -2,7 +2,6 @@ setwd(normalizePath(dirname(R.utils::commandArgs(asValues=TRUE)$"f")))
 source("../../../scripts/h2o-r-test-setup.R")
 
 
-
 test.CoxPH.strata_inter <- function() {
     data(lung)
 
@@ -35,7 +34,8 @@ test.CoxPH.strata_inter <- function() {
 
     hex.model <- .as.survival.coxph.model(fit.hex.implicit.2@model)
     expect_equal(Surv(time, status) ~ wt.loss + age:strata(sex) + strata(ph.ecog), hex.model$call)
-    expect_equal(fit.coef, hex.model$coef[names(fit.coef)])
+    expect_equal(unname(fit.coef[c("wt.loss", "age_sex.1", "age_sex.2")]),
+                 unname(hex.model$coef[c("wt.loss", "age_sex{1}", "age_sex{2}")]))
 
     lp.r <- predict(fit, newdata = lung, type = "lp", na.action = na.exclude)
     names(lp.r) <- NULL

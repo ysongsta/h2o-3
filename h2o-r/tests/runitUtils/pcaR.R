@@ -22,6 +22,7 @@ checkPCAModel<- function(fitH2O, fitR, tolerance=1e-6, sort_rows=TRUE, compare_a
   pcimpH2O <- fitH2O@model$importance
   eigvecR <- fitR$rotation
   eigvecH2O <- fitH2O@model$eigenvectors
+  row.names(eigvecH2O) <- gsub("(.*)\\{(.*)\\}", "\\1.\\2", row.names(eigvecH2O))
   textHeader = "Compare Importance between R and H2O\n"
   RText = "R Importance of Components:"
   H2OText = "H2O Importance of Components:"

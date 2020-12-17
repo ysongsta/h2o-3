@@ -15,7 +15,7 @@ test.glm.interactions.lambda0 <- function() {
    coeffR <- glmR$coefficients
    coeffH2O <- glmH2O@model$coefficients
    rcoeffNames <- c("(Intercept)", "income>50K", "sexMale", "income>50K:sexMale")
-   h2ocoeffNames <- c("Intercept", "income.>50K", "sex.Male", "income_sex.>50K_Male")
+   h2ocoeffNames <- c("Intercept", "income{>50K}", "sex{Male}", "income_sex{>50K_Male}")
    
    # compare coefficient between R and H2O glm model.  They should be close
    for (ind in seq_len(length(rcoeffNames))) {

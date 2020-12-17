@@ -870,7 +870,7 @@ public class DataInfo extends Keyed<DataInfo> {
       for (int value : coefOriginalIndices) coefOriginalIndicesList.add(value);
       int end = coefOriginalIndicesList.lastIndexOf(coefOriginalIndices[i]);
       String prefix = findLongestCommonPrefix(Arrays.copyOfRange(coefNames(), i, end + 1));
-      if (".".equals(prefix.substring(prefix.length() - 1))) {
+      if ("{".equals(prefix.substring(prefix.length() - 1))) {
         prefix = prefix.substring(0, prefix.length() - 1);
       }
       originalNames[j] = prefix;
