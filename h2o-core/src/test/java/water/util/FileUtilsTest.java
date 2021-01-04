@@ -84,7 +84,7 @@ public class FileUtilsTest {
             final File h2oHomeDir = new File(System.getProperty("user.dir")).getParentFile();
             environmentVariables.set("H2O_FILES_SEARCH_PATH", h2oHomeDir.getAbsolutePath());
 
-            final Frame trainingFrame = Scope.track(TestUtil.parse_test_file("./smalldata/testng/airlines_train.csv"));
+            final Frame trainingFrame = Scope.track(parseTestFile("./smalldata/testng/airlines_train.csv"));
             assertNotNull(trainingFrame);
         } finally {
             Scope.exit();
