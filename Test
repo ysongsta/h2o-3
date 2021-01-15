@@ -1,0 +1,3 @@
+/app_prime/jdk1.8.0_144/bin/java -jar /app_prime/h20-3.14.0.3/h20.jar-port 54321 &
+
+*You can use different ports or the same port 54020
